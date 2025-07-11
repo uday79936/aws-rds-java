@@ -1,51 +1,146 @@
- ## AWS Infrastructure Deployment Project with java
-This project demonstrates the complete setup of a production-style, scalable AWS environment from scratch using VPC networking, EC2 instances, NAT Gateway, RDS, and a Java web application running on Apache Tomcat. It includes secure routing, private-public subnetting, and a full database connection.
+# ☁️ AWS CloudFormation: Single VPC + Multi‑AZ Subnets + Java/MySQL Web App
 
-## Application Code Source:
+This repository contains an AWS CloudFormation template that provisions a single VPC across two Availability Zones, deploys EC2 instances, and sets up a Java web application backed by MySQL.
 
-📂 The Java application source code used in this project was originally taken from the open-source repository: Ai-TechNov/aws-rds-java.
-🛠️ I have modified the database schema and updated the pom.xml file to better suit the application and deployment requirements of this project.
+---
 
-## 🔧 Project Architecture:
+## 🚀 Project Overview
 
-## 🔹 VPC & Networking:
+### 1. Infrastructure (CloudFormation)
 
-Created a custom VPC with a 10.0.0.0/16 CIDR block.
-Configured 2 Public Subnets and 2 Private Subnets across two Availability Zones:
-us-east-1a - 10.0.0.0/20 and us-east-1b - 10.0.16.0/20 .
-Attached an Internet Gateway for public internet access.
-Created and associated Route Tables for public and private subnets.
-Configured a NAT Gateway in a public subnet to provide one-way internet access to private instances.
+* **One VPC** spanning **AZ 1a** and **AZ 1b**
+* In each AZ:
 
-## 🔹 Compute Layer (EC2):
+  * **Public subnet**
+  * **Private subnet**
+* **Internet Gateway** for public connectivity
+* **NAT Gateway** in a public subnet so private subnets can access the internet ([docs.aws.amazon.com][1], [docs.aws.amazon.com][2])
+* Two **route tables**:
 
-Launched a Public EC2 (Application Layer) in AZ 1a.
-Launched a Private EC2 (Database Layer) in AZ 1b.
-Deployed a Bastion Host in the public subnet for SSH access to the private instance.
-Installed and configured MySQL Server on the private EC2 instance.
+  * Public → IGW
+  * Private → NAT Gateway
+* **EC2 instances**:
 
-## 🔹 Database Layer (RDS):
+  * Public EC2 in subnet (AZ 1a) for administration
+  * Private EC2 in subnet (AZ 1b) hosting MySQL and Java web app
 
-Provisioned an Amazon RDS MySQL instance in the private subnet.
-Secured RDS using proper security groups, subnet groups, and parameter groups.
-Verified private EC2 instance can connect and operate on RDS.
+### 2. Database
 
-## 🔹 Application Layer (Java + Tomcat):
+* MySQL installed on the **private EC2 instance**
+* Java app connects using the private IP or endpoint
 
-Deployed another EC2 instance in a public subnet to run a Java web app.
-Installed Apache Tomcat, uploaded .war file.
-Java application supports:
-Creating user accounts
-Storing username and password in admin admin123
+### 3. Software Setup via EC2 UserData
 
-## 🐱 Apache Tomcat Installation:
+* Installs:
 
-Apache Tomcat 9 was installed manually on the EC2 instance to deploy and run the Java web application.
+  * `mysql-server` & `mysql-client`
+  * OpenJDK (Java)
+  * Maven
+  * Git
+* Clones and builds the Java web app using Maven
 
-📥 The server was downloaded using the following command:
+### 4. Java Web Application
 
-wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.107/bin/apache-tomcat-9.0.107.zip
+* Contains JSP pages:
 
+  * `login.jsp`
+  * `userRegistration.jsp`
+* Connects to MySQL via the private endpoint
+* Enables user registration and login
+
+---
+
+## 📁 Repository Structure
+
+```text
+.
+├── cfn/
+│   └── vpc-app-stack.yml      # CloudFormation template
+├── scripts/
+│   └── bootstrap.sh          # UserData script (installs & starts services)
+├── src/
+│   ├── login.jsp
+│   ├── userRegistration.jsp
+│   └── pom.xml               # Maven build file
+└── README.md                 # This file
+```
+
+---
+
+## ⚙️ Prerequisites
+
+* AWS account with permissions for VPC, EC2, IAM, CloudFormation
+* AWS CLI or AWS Console access
+* SSH key pair for EC2
+* Familiarity with Java, Maven, and Git
+
+---
+
+## 🔧 Setup & Deployment
+
+1. **Clone repo:**
+
+   ```bash
+   git clone https://github.com/Ai-TechNov/aws-rds-java.git
+   
+   cd aws-rds-java
+   ```
+
+2. **Deploy CloudFormation stack:**
+
+   ```bash
+  https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A637423198678%3Astack%2Fweb-app%2Faf7dcfe0-5e09-11f0-8f72-12322c2f4bf5&filteringText=&filteringStatus=active&viewNested=true
+   ```
+
+3. **Retrieve outputs:**
+
+   * Public EC2 IP (for SSH)
+   * Private EC2 IP (used by the web app to connect to MySQL)
+
+4. **SSH into the public EC2:**
+
+   ```bash
+   ssh -i your-key.pem ec2-user@<public-ec2-ip>
+   ```
+
+   The private EC2 is set up automatically via UserData.
+
+5. **Application setup:**
+
+   * Bootstraps software, clones the repo, builds and launches the app
+
+---
+
+## 🌐 Testing the Application
+
+1. Access the Java web app from the internal network:
+
+   ```
+   http://<private-ec2-private-ip>:8080/login.jsp
+   ```
+2. Register via `userRegistration.jsp`, then log in via `login.jsp`.
+   This confirms Java/MySQL connectivity via the database endpoint.
+
+
+
+---
+
+## 💡 Future Enhancements
+
+* Move MySQL off EC2 and into **RDS (Multi‑AZ)** for increased resilience
+* Add **HTTPS/SSL** for secure communication
+* Utilize **IAM roles** and **SSM** for better management
+* Integrate a **Load Balancer** and auto-scaling
+* Implement CI/CD pipelines with **GitHub Actions**
+
+---
+
+## 💵 Cost Awareness
+
+* Uses EC2, NAT Gateway, data transfer—these services are billable
+* Delete stacks when finished to avoid unnecessary costs
+
+---
 ## 🗺️ Architecture Diagram:
 
 <img width="847" height="665" alt="Image" src="https://github.com/user-attachments/assets/a767d16b-8d46-4cf9-9621-2586009d3e7b" />
@@ -108,6 +203,16 @@ Remove any hardcoded passwords, secrets, or keys before uploading.
 ## output of web app:
 
 <img width="1133" height="758" alt="Image" src="https://github.com/user-attachments/assets/10a25c0f-1796-48c0-9c3c-7ed936cee0a1" />
+
+---
+
+## 🧹 Cleanup
+
+Terminate all resources by deleting the stack:
+
+```bash
+aws cloudformation delete-stack --stack-name single-vpc-java-app
+```
 
 ## Author:
 
