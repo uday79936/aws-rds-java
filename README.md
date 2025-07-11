@@ -48,7 +48,7 @@ wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.107/bin/apache-tomcat-9.0.107
 
 ## 🗺️ Architecture Diagram:
 
-<img width="1062" height="667" alt="Image" src="https://github.com/user-attachments/assets/a509e6e9-60c3-4b6d-9350-05b12fe4babc" />
+<img width="878" height="716" alt="Image" src="https://github.com/user-attachments/assets/6f2665f4-f8b7-4017-8c37-3aaf38e169de" />
 
 📄 Infrastructure as Code
 This project uses AWS CloudFormation to provision all resources.
