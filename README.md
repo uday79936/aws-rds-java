@@ -89,7 +89,7 @@ This repository contains an AWS CloudFormation template that provisions a single
 2. **Deploy CloudFormation stack:**
 
    ```bash
-  https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/stackinfo?stackId=arn%3Aaws%3Acloudformation%3Aus-east-1%3A637423198678%3Astack%2Fweb-app%2Faf7dcfe0-5e09-11f0-8f72-12322c2f4bf5&filteringText=&filteringStatus=active&viewNested=true
+cloudformation.yaml file
    ```
 
 3. **Retrieve outputs:**
