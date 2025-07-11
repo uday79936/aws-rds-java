@@ -1,4 +1,4 @@
- ## AWS Full-Stack Infrastructure Deployment Project
+ ## AWS Infrastructure Deployment Project with java
 This project demonstrates the complete setup of a production-style, scalable AWS environment from scratch using VPC networking, EC2 instances, NAT Gateway, RDS, and a Java web application running on Apache Tomcat. It includes secure routing, private-public subnetting, and a full database connection.
 
 ## Application Code Source:
