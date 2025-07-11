@@ -158,7 +158,7 @@ aws cloudformation create-stack
 
 ## 🛑 Make Sure to:
 Remove any hardcoded passwords, secrets, or keys before uploading.
-## 📸 CIDR-Screenshots:
+## 📸 Screenshots:
 
 ## cloudformation:
 
