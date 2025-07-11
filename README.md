@@ -143,7 +143,7 @@ This repository contains an AWS CloudFormation template that provisions a single
 ---
 ## 🗺️ Architecture Diagram:
 
-<img width="847" height="665" alt="Image" src="https://github.com/user-attachments/assets/a767d16b-8d46-4cf9-9621-2586009d3e7b" />
+<img width="1024" height="1024" alt="Image" src="https://github.com/user-attachments/assets/91ed09df-9d8a-40cf-836f-84d8876c4dca" />
 
 📄 Infrastructure as Code
 This project uses AWS CloudFormation to provision all resources.
